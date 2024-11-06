@@ -11,5 +11,5 @@ public class EntityId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long customerId;
+    private long id;
 }
