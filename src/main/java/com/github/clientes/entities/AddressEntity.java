@@ -40,7 +40,7 @@ public class AddressEntity extends EntityId{
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
-    private AddressEntity addressEntity;
+    private CustomerEntity customer;
 
 
     @PrePersist
