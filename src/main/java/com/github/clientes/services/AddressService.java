@@ -1,16 +1,15 @@
 package com.github.clientes.services;
 
-import com.github.clientes.dto.CreateAddressDTO;
-import com.github.clientes.entities.AddressEntity;
-import com.github.clientes.entities.CustomerEntity;
-import com.github.clientes.repositories.AddressRepository;
-import jakarta.validation.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.clientes.dto.CreateAddressDTO;
+import com.github.clientes.entities.AddressEntity;
+import com.github.clientes.repositories.AddressRepository;
 
 @Service
 public class AddressService {
