@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, String> {
+public class UniqueEmailValidatorPatch implements ConstraintValidator<UniqueEmailPatch, String> {
     @Autowired
     private CustomerRepository customerRepository;
     
@@ -19,8 +19,9 @@ public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, St
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext context) {
-        String externalUuid = request.getPathInfo();
-
+        String requestURI = request.getRequestURI();
+        String externalUuid = requestURI.substring(requestURI.lastIndexOf("/") + 1);
+        
         if (externalUuid != null && !externalUuid.trim().isEmpty()) {
             UUID uuid = UUID.fromString(externalUuid);
             
