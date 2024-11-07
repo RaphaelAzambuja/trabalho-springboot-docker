@@ -39,7 +39,7 @@ public class AddressEntity extends EntityId{
     private LocalDateTime dataCadastro;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "customer_id", nullable = false)
     private CustomerEntity customer;
 
 
