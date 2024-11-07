@@ -22,7 +22,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "tb_customers")
 public class CustomerEntity extends EntityId {
-    @Column(name = "externalUUID", nullable = false)
+    @Column(name = "externalUuid", nullable = false)
     private UUID externalUuid;
 
     @Column(name = "nome", nullable = false, length = 255)

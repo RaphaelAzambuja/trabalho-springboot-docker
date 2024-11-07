@@ -9,6 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.github.clientes.dto.CreateCustomerDTO;
+import com.github.clientes.dto.UpdateCustomerDTO;
 import com.github.clientes.entities.CustomerEntity;
 import com.github.clientes.repositories.CustomerRepository;
 
@@ -53,5 +54,37 @@ public class CustomerService {
         } catch (Exception e) {
             throw new RuntimeException("Erro inesperado: " + e.getMessage(), e);
         }
+    }
+
+    public CustomerEntity updateCustomer(String externalUuid, UpdateCustomerDTO updateCustomerDTO) {
+        UUID uuid = UUID.fromString(externalUuid);
+        
+        CustomerEntity customer = customerRepository.findByExternalUuid(uuid);
+
+        if (customer == null) {
+            return null;
+        }
+
+        if (updateCustomerDTO.nome() != null) {
+            customer.setNome(updateCustomerDTO.nome());
+        }
+
+        if (updateCustomerDTO.sobrenome() != null) {
+            customer.setSobrenome(updateCustomerDTO.sobrenome());
+        }
+
+        if (updateCustomerDTO.email() != null) {
+            customer.setEmail(updateCustomerDTO.email());
+        }
+
+        if (updateCustomerDTO.sexo() != null) {
+            customer.setSexo(updateCustomerDTO.sexo());
+        }
+
+        if (updateCustomerDTO.dataNascimento() != null) {
+            customer.setDataNascimento(updateCustomerDTO.dataNascimento());
+        }
+
+        return customerRepository.save(customer);
     }
 }
