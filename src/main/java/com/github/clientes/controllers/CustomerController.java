@@ -33,11 +33,7 @@ public class CustomerController {
     public ResponseEntity<List<CustomerEntity>> findAllCustomers() {
         List<CustomerEntity> customers = customerService.findAllCustomers();
 
-        if (customers.size() > 0) {
-            return ResponseEntity.status(HttpStatus.OK).body(customers);
-        }
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(customers);
+        return ResponseEntity.status(HttpStatus.OK).body(customers);
     }
 
     @GetMapping("/{externalUuid}")
@@ -61,7 +57,7 @@ public class CustomerController {
     }
 
     @PatchMapping("/{externalUuid}")
-    public ResponseEntity<CustomerEntity> updateCustomer(@PathVariable UUID externalUuid, @Valid @RequestBody UpdateCustomerDTO updateCustomerDTO) {
+    public ResponseEntity<CustomerEntity> updateCustomer(@PathVariable String externalUuid, @Valid @RequestBody UpdateCustomerDTO updateCustomerDTO) {
         try {
             CustomerEntity updatedCustomer = customerService.updateCustomer(externalUuid, updateCustomerDTO);
 

@@ -56,8 +56,10 @@ public class CustomerService {
         }
     }
 
-    public CustomerEntity updateCustomer(UUID externalUuid, UpdateCustomerDTO updateCustomerDTO) {
-        CustomerEntity customer = customerRepository.findByExternalUuid(externalUuid);
+    public CustomerEntity updateCustomer(String externalUuid, UpdateCustomerDTO updateCustomerDTO) {
+        UUID uuid = UUID.fromString(externalUuid);
+        
+        CustomerEntity customer = customerRepository.findByExternalUuid(uuid);
 
         if (customer == null) {
             return null;
