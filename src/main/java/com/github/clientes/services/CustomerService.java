@@ -1,11 +1,11 @@
 package com.github.clientes.services;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.github.clientes.dto.CreateCustomerDTO;
@@ -21,13 +21,9 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public List<CustomerEntity> findAllCustomers() {
+    public Page<CustomerEntity> findAllCustomers(Pageable pageable) {
         try {
-            return customerRepository.findAll();
-        } catch (DataAccessException ex) {
-            return Collections.emptyList();
-        } catch (RuntimeException ex) {
-            return Collections.emptyList();
+            return customerRepository.findAll(pageable);
         } catch (Exception e) {
             throw new RuntimeException("Erro inesperado: " + e.getMessage(), e);
         }
