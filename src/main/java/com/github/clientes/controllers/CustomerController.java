@@ -36,7 +36,7 @@ public class CustomerController {
     @GetMapping
     public ResponseEntity<Page<CustomerEntity>> findAllCustomers(
         @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "15") int size,
         @RequestParam(defaultValue = "nome") String orderBy,
         @RequestParam(defaultValue = "ASC") Sort.Direction direction
     ) {
