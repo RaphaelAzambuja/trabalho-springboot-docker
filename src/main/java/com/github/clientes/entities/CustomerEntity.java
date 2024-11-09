@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CurrentTimestamp;
 
+import com.github.clientes.enums.Sex;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrePersist;
@@ -35,7 +37,7 @@ public class CustomerEntity extends EntityId {
     private String email;
 
     @Column(name = "sexo", length = 10)
-    private String sexo;
+    private Sex sexo;
 
     @Column(name = "data_nascimento")
     private LocalDate dataNascimento;

@@ -1,18 +1,20 @@
 package com.github.clientes.services;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import org.modelmapper.ModelMapper;
 import com.github.clientes.dto.CreateCustomerDTO;
 import com.github.clientes.dto.UpdateCustomerDTO;
 import com.github.clientes.entities.CustomerEntity;
 import com.github.clientes.repositories.CustomerRepository;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 
 @Service
@@ -21,19 +23,19 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public List<CustomerEntity> findAllCustomers() {
+    @Autowired
+    private ModelMapper modelMapper;
+
+    public Page<CustomerEntity> findAllCustomers(Pageable pageable) {
         try {
-            return customerRepository.findAll();
-        } catch (DataAccessException ex) {
-            return Collections.emptyList();
-        } catch (RuntimeException ex) {
-            return Collections.emptyList();
+            return customerRepository.findAll(pageable);
         } catch (Exception e) {
             throw new RuntimeException("Erro inesperado: " + e.getMessage(), e);
         }
     }
 
-    public CustomerEntity findCustomerByExternalUuid(UUID uuid) {
+    public CustomerEntity findCustomerByExternalUuid(String externalUuid) {
+        UUID uuid = UUID.fromString(externalUuid);
         return customerRepository.findByExternalUuid(uuid);
     }
 
@@ -57,34 +59,31 @@ public class CustomerService {
     }
 
     public CustomerEntity updateCustomer(String externalUuid, UpdateCustomerDTO updateCustomerDTO) {
-        UUID uuid = UUID.fromString(externalUuid);
-        
-        CustomerEntity customer = customerRepository.findByExternalUuid(uuid);
+        CustomerEntity customer = customerRepository.findByExternalUuid(UUID.fromString(externalUuid));
 
         if (customer == null) {
-            return null;
+            throw new RuntimeException("Cliente não encontrado");
         }
 
-        if (updateCustomerDTO.nome() != null) {
-            customer.setNome(updateCustomerDTO.nome());
-        }
-
-        if (updateCustomerDTO.sobrenome() != null) {
-            customer.setSobrenome(updateCustomerDTO.sobrenome());
-        }
-
-        if (updateCustomerDTO.email() != null) {
-            customer.setEmail(updateCustomerDTO.email());
-        }
-
-        if (updateCustomerDTO.sexo() != null) {
-            customer.setSexo(updateCustomerDTO.sexo());
-        }
-
-        if (updateCustomerDTO.dataNascimento() != null) {
-            customer.setDataNascimento(updateCustomerDTO.dataNascimento());
-        }
+        modelMapper.map(updateCustomerDTO, customer);
 
         return customerRepository.save(customer);
+    }
+
+    @Transactional
+    public boolean deleteCustomer(String externalUuid) {
+        try {
+            UUID uuid = UUID.fromString(externalUuid);
+            CustomerEntity customer = customerRepository.findByExternalUuid(uuid);
+
+            if (customer == null) {
+                return false;
+            }
+
+            customerRepository.deleteByExternalUuid(uuid);
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao tentar excluir o cliente");
+        }
     }
 }
