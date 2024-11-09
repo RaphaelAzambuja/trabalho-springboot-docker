@@ -30,4 +30,10 @@ public record UpdateCustomerDTO(
     @NotNull(message = "A data de nascimento não pode estar nula")
     @Past(message = "A data de nascimento deve ser uma data passada")
     LocalDate dataNascimento
-) {}
+) {
+    public UpdateCustomerDTO {
+        if (sexo == null) {
+            sexo = Sex.NAO_INFORMADO;
+        }
+    }
+}
