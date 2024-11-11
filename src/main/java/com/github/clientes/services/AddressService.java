@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.github.clientes.enterprise.AddressLimitExceededException;
 import com.github.clientes.entities.CustomerEntity;
 import com.github.clientes.repositories.CustomerRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,9 @@ AddressRepository addressRepository;
 
 @Autowired
 CustomerRepository customerRepository;
+
+@Autowired
+private ModelMapper modelMapper;
 
 
     public List<AddressEntity> findAllAddress() {
@@ -95,6 +99,18 @@ CustomerRepository customerRepository;
         } catch (Exception e) {
             throw new RuntimeException("Erro ao tentar excluir o registro de endereço");
         }
+    }
+
+    public AddressEntity updateAddress(String externalUuid, CreateAddressDTO createAddressDTO) {
+        AddressEntity address = addressRepository.findByExternalUuid(UUID.fromString(externalUuid));
+
+        if (address == null) {
+            throw new RuntimeException("Endereço não encontrado");
+        }
+
+        modelMapper.map(createAddressDTO, address);
+
+        return addressRepository.save(address);
     }
 
 }
