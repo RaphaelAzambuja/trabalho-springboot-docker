@@ -113,6 +113,11 @@ private ModelMapper modelMapper;
         return addressRepository.save(address);
     }
 
+    public AddressEntity findCustomerByExternalUuid(String externalUuid) {
+        UUID uuid = UUID.fromString(externalUuid);
+        return addressRepository.findByExternalUuid(uuid);
+    }
+
 }
 
 
