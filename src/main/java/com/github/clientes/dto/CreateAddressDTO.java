@@ -19,7 +19,10 @@ public record CreateAddressDTO(
 
         @NotNull(message = "A informação estado da federação não pode ser nula")
         @NotBlank(message = "A informação estado da federação não pode estar vazia")
-        String uf
+        String uf,
+
+         @NotNull(message = "O ID do cliente não pode ser nulo")
+         Long customerId
 
 
 ) {
