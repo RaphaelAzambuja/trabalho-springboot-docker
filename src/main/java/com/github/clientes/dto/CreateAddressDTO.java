@@ -3,8 +3,7 @@ package com.github.clientes.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record CreateAddressDTO(
-
+public record CreateAddressDTO (
         @NotNull(message = "A informação rua não pode ser nula")
         @NotBlank(message = "A informação rua não pode estar vazia")
         String rua,
@@ -21,9 +20,6 @@ public record CreateAddressDTO(
         @NotBlank(message = "A informação estado da federação não pode estar vazia")
         String uf,
 
-         @NotNull(message = "O ID do cliente não pode ser nulo")
-         Long customerId
-
-
-) {
-}
+        @NotNull(message = "O ID do cliente não pode ser nulo")
+        Long customerId
+) {}

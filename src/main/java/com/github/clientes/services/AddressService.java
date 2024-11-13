@@ -28,7 +28,6 @@ CustomerRepository customerRepository;
 @Autowired
 private ModelMapper modelMapper;
 
-
     public List<AddressEntity> findAllAddress() {
         List<AddressEntity> addresses = addressRepository.findAll();
 
@@ -48,11 +47,9 @@ private ModelMapper modelMapper;
         return addresses;
     }
 
-
     public AddressEntity findAddressByExternalUuid(UUID uuid) {
         return addressRepository.findByExternalUuid(uuid);
     }
-
 
     @Transactional
     public AddressEntity createAddress(CreateAddressDTO addressDTO) {
@@ -82,7 +79,6 @@ private ModelMapper modelMapper;
 
         return addressRepository.save(newAddress);
     }
-
 
     @jakarta.transaction.Transactional
     public boolean deleteAddress(String externalUuid) {
@@ -117,7 +113,6 @@ private ModelMapper modelMapper;
         UUID uuid = UUID.fromString(externalUuid);
         return addressRepository.findByExternalUuid(uuid);
     }
-
 }
 
 
