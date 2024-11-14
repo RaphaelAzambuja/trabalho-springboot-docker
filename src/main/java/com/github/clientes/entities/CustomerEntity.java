@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CurrentTimestamp;
 
+import com.github.clientes.dto.GetCustomerDTO;
 import com.github.clientes.enums.Sex;
 
 import jakarta.persistence.Column;
@@ -49,5 +50,9 @@ public class CustomerEntity extends EntityId {
     @PrePersist
     private void generateExternalUuid() {
         this.externalUuid = UUID.randomUUID();
+    }
+
+    public GetCustomerDTO toDTO() {
+        return new GetCustomerDTO(this.externalUuid, this.nome, this.sobrenome, this.email, this.sexo, this.dataNascimento);
     }
 }
