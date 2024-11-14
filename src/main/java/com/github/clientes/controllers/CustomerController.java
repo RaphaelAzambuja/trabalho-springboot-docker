@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.clientes.dto.CreateCustomerDTO;
+import com.github.clientes.dto.GetCustomerDTO;
 import com.github.clientes.dto.UpdateCustomerDTO;
-import com.github.clientes.entities.CustomerEntity;
 import com.github.clientes.services.CustomerService;
 
 import jakarta.validation.Valid;
@@ -33,7 +33,7 @@ public class CustomerController {
     private CustomerService customerService;
 
     @GetMapping
-    public ResponseEntity<Page<CustomerEntity>> findAllCustomers(
+    public ResponseEntity<Page<GetCustomerDTO>> findAllCustomers(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "15") int size,
         @RequestParam(defaultValue = "id") String orderBy,
@@ -41,14 +41,14 @@ public class CustomerController {
     ) {
         Pageable pageable  = PageRequest.of(page, size, Sort.by(direction, orderBy));
         
-        Page<CustomerEntity> customers = customerService.findAllCustomers(pageable);
+        Page<GetCustomerDTO> customers = customerService.findAllCustomers(pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(customers);
     }
 
     @GetMapping("/{externalUuid}")
-    public ResponseEntity<CustomerEntity> findCustomerById(@PathVariable String externalUuid) {
-        CustomerEntity customer = customerService.findCustomerByExternalUuid(externalUuid);
+    public ResponseEntity<GetCustomerDTO> findCustomerById(@PathVariable String externalUuid) {
+        GetCustomerDTO customer = customerService.findCustomerByExternalUuid(externalUuid);
 
         if (customer == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -58,13 +58,13 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<CustomerEntity> createCustomer(@Valid @RequestBody CreateCustomerDTO createCustomerDTO) {
+    public ResponseEntity<GetCustomerDTO> createCustomer(@Valid @RequestBody CreateCustomerDTO createCustomerDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(customerService.createCustomer(createCustomerDTO));
     }
 
     @PatchMapping("/{externalUuid}")
-    public ResponseEntity<CustomerEntity> updateCustomer(@PathVariable String externalUuid, @Valid @RequestBody UpdateCustomerDTO updateCustomerDTO) {
-        CustomerEntity updatedCustomer = customerService.updateCustomer(externalUuid, updateCustomerDTO);
+    public ResponseEntity<GetCustomerDTO> updateCustomer(@PathVariable String externalUuid, @Valid @RequestBody UpdateCustomerDTO updateCustomerDTO) {
+        GetCustomerDTO updatedCustomer = customerService.updateCustomer(externalUuid, updateCustomerDTO);
 
         if (updatedCustomer == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -8,8 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import org.modelmapper.ModelMapper;
 import com.github.clientes.dto.CreateCustomerDTO;
+import com.github.clientes.dto.GetCustomerDTO;
 import com.github.clientes.dto.UpdateCustomerDTO;
 import com.github.clientes.entities.CustomerEntity;
 import com.github.clientes.repositories.CustomerRepository;
@@ -23,23 +23,23 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
-    public Page<CustomerEntity> findAllCustomers(Pageable pageable) {
+    public Page<GetCustomerDTO> findAllCustomers(Pageable pageable) {
         try {
-            return customerRepository.findAll(pageable);
+            Page<CustomerEntity> customers = customerRepository.findAll(pageable);
+
+            return customers.map(customer -> customer.toDTO());
         } catch (Exception e) {
             throw new RuntimeException("Erro inesperado: " + e.getMessage(), e);
         }
     }
 
-    public CustomerEntity findCustomerByExternalUuid(String externalUuid) {
-        UUID uuid = UUID.fromString(externalUuid);
-        return customerRepository.findByExternalUuid(uuid);
+    public GetCustomerDTO findCustomerByExternalUuid(String externalUuid) {
+        CustomerEntity customer = customerRepository.findByExternalUuid(UUID.fromString(externalUuid));
+        
+        return customer != null ? customer.toDTO() : null;
     }
 
-    public CustomerEntity createCustomer(CreateCustomerDTO createCustomerDTO) {
+    public GetCustomerDTO createCustomer(CreateCustomerDTO createCustomerDTO) {
         try {
             CustomerEntity newCustomer = new CustomerEntity();
             newCustomer.setNome(createCustomerDTO.nome());
@@ -48,7 +48,10 @@ public class CustomerService {
             newCustomer.setSexo(createCustomerDTO.sexo());
             newCustomer.setDataNascimento(createCustomerDTO.dataNascimento());
     
-            return customerRepository.save(newCustomer);
+            CustomerEntity customer = customerRepository.save(newCustomer);
+
+            return customer.toDTO();
+
         } catch (DataAccessException e) {
             throw new RuntimeException("Erro ao acessar o banco de dados: " + e.getMessage(), e);
         } catch (ConstraintViolationException e) {
@@ -58,16 +61,20 @@ public class CustomerService {
         }
     }
 
-    public CustomerEntity updateCustomer(String externalUuid, UpdateCustomerDTO updateCustomerDTO) {
+    public GetCustomerDTO updateCustomer(String externalUuid, UpdateCustomerDTO updateCustomerDTO) {
         CustomerEntity customer = customerRepository.findByExternalUuid(UUID.fromString(externalUuid));
 
         if (customer == null) {
-            throw new RuntimeException("Cliente não encontrado");
+            return null;
         }
 
-        modelMapper.map(updateCustomerDTO, customer);
+        customer.setNome(updateCustomerDTO.nome());
+        customer.setSobrenome(updateCustomerDTO.sobrenome());
+        customer.setEmail(updateCustomerDTO.email());
+        customer.setSexo(updateCustomerDTO.sexo());
+        customer.setDataNascimento(updateCustomerDTO.dataNascimento());
 
-        return customerRepository.save(customer);
+        return customerRepository.save(customer).toDTO();
     }
 
     @Transactional
