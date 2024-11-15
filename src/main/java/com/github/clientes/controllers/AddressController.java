@@ -1,7 +1,6 @@
 package com.github.clientes.controllers;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,7 +34,7 @@ public class AddressController {
     }
 
     @GetMapping("/{externalUuid}")
-    public ResponseEntity<AddressEntity> findAddressById(@PathVariable UUID externalUuid) {
+    public ResponseEntity<AddressEntity> findAddressById(@PathVariable String externalUuid) {
         AddressEntity address = addressService.findAddressByExternalUuid(externalUuid);
 
         if (address == null) {

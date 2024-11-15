@@ -1,5 +1,7 @@
 package com.github.clientes.dto;
 
+import java.util.UUID;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -21,5 +23,5 @@ public record CreateAddressDTO (
         String uf,
 
         @NotNull(message = "O ID do cliente não pode ser nulo")
-        Long customerId
+        UUID customerUuid
 ) {}

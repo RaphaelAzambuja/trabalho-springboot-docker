@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
-import com.github.clientes.enterprise.AddressLimitExceededException;
-import com.github.clientes.entities.CustomerEntity;
-import com.github.clientes.repositories.CustomerRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.clientes.dto.CreateAddressDTO;
+import com.github.clientes.enterprise.AddressLimitExceededException;
 import com.github.clientes.entities.AddressEntity;
+import com.github.clientes.entities.CustomerEntity;
 import com.github.clientes.repositories.AddressRepository;
-import org.springframework.transaction.annotation.Transactional;
+import com.github.clientes.repositories.CustomerRepository;
 
 @Service
 public class AddressService {
@@ -47,23 +47,15 @@ private ModelMapper modelMapper;
         return addresses;
     }
 
-    public AddressEntity findAddressByExternalUuid(UUID uuid) {
-        return addressRepository.findByExternalUuid(uuid);
+    public AddressEntity findAddressByExternalUuid(String uuid) {
+        return addressRepository.findByExternalUuid(UUID.fromString(uuid));
     }
 
     @Transactional
     public AddressEntity createAddress(CreateAddressDTO addressDTO) {
+        CustomerEntity customer = customerRepository.findByExternalUuid(addressDTO.customerUuid());
 
-        CustomerEntity customer = customerRepository.findById(addressDTO.customerId())
-                .orElseThrow(() -> new NoSuchElementException("Cliente não encontrado"));
-
-        List<Object[]> addressStats = addressRepository.countDistinctAddressesByCustomerId();
-
-        long totalDistinctAddresses = addressStats.stream()
-                .filter(record -> ((Long) record[0]).equals(customer.getId()))
-                .mapToLong(record -> (Long) record[1])
-                .findFirst()
-                .orElse(0);
+        long totalDistinctAddresses = addressRepository.countDistinctAddressesByCustomerId(customer.getId());
 
         if (totalDistinctAddresses >= 5) {
             throw new AddressLimitExceededException("Limite de 5 endereços distintos excedido.");
@@ -74,7 +66,6 @@ private ModelMapper modelMapper;
         newAddress.setBairro(addressDTO.bairro());
         newAddress.setCidade(addressDTO.cidade());
         newAddress.setUf(addressDTO.uf());
-
         newAddress.setCustomer(customer);
 
         return addressRepository.save(newAddress);
