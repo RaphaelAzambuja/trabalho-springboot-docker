@@ -2,6 +2,8 @@ package com.github.clientes.entities.user;
 
 import com.github.clientes.entities.EntityId;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +19,9 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "tb_users")
+
 public class User extends EntityId implements UserDetails {
 
     @Column(name = "login", nullable = false)
