@@ -40,7 +40,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
-    @PostMapping("/registrar")
+    @PostMapping("/register")
     public ResponseEntity registrar(@RequestBody @Valid RegisterUserDTO data) {
         if (this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
 
